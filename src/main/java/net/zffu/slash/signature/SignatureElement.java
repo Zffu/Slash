@@ -17,10 +17,10 @@ public class SignatureElement {
         this.arrayDepth = arrayDepth;
     }
 
-    public SignatureElement(ElementType element, String className) {
+    public SignatureElement(ElementType element, int arrayDepth) {
         this.element = element;
-        this.className = className;
-        this.arrayDepth = 0;
+        this.arrayDepth = arrayDepth;
+        this.className = null;
     }
 
     public SignatureElement(ElementType element) {
@@ -42,9 +42,16 @@ public class SignatureElement {
 
         builder.append(this.element.obfuscatedPrefix);
 
-        if(this.element == ElementType.CLASS) builder.append(this.className);
+        if(this.element == ElementType.CLASS) {
+            builder.append(this.className);
+            builder.append(';');
+        }
 
         return builder.toString();
+    }
+
+    public int getObfuscatedLength() {
+        return this.arrayDepth + (this.className != null ? this.className.length() + 1 : 0) + 1;
     }
 
     /**
@@ -70,6 +77,34 @@ public class SignatureElement {
             this.obfuscatedPrefix = obfuscatedPrefix;
             this.readable = readable;
         }
+
+        public static ElementType fromPrefix(char prefix) {
+            for(ElementType type : values()) {
+                if(type.obfuscatedPrefix == prefix) return type;
+            }
+
+            return null;
+        }
+    }
+
+    /**
+     * Creates a {@link SignatureElement} based on an string in the obfuscated format.
+     * @param obfuscated the obfuscated.
+     * @return the {@link SignatureElement}
+     */
+    public static SignatureElement fromObfuscated(String obfuscated) {
+        int arrayDepth = 0;
+
+        while(obfuscated.charAt(arrayDepth) == '[') {
+            ++arrayDepth;
+        }
+
+        ElementType type = ElementType.fromPrefix(obfuscated.charAt(arrayDepth));
+        if(type != ElementType.CLASS) return new SignatureElement(type, arrayDepth);
+
+        String className = obfuscated.substring(arrayDepth + 1, obfuscated.length() - 1); // Gets the class name by making a substring without the 'L' prefix and the ';' suffix
+
+        return new SignatureElement(type, className, arrayDepth);
     }
 
 
