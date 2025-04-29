@@ -1,10 +1,12 @@
 package net.zffu.slash;
 
+import net.zffu.slash.utils.Comparable;
+
 /**
  * The "key" of a mapping element. Can represent class names, method names and more! The use of this object is to allow multiple formats of key (example dot keys and slash keys)
  * @since 1.0.0
  */
-public class MappingKey {
+public class MappingKey implements Comparable<MappingKey> {
 
     public final String[] keyElements;
 
@@ -28,6 +30,17 @@ public class MappingKey {
         }
 
         return length;
+    }
+
+    @Override
+    public boolean isEquals(MappingKey mappingKey) {
+        if(mappingKey.keyElements.length != this.keyElements.length) return false;
+
+        for(int i = 0; i < this.keyElements.length; ++i) {
+            if(!this.keyElements[i].equals(mappingKey.keyElements[i])) return false;
+        }
+
+        return true;
     }
 
     /**

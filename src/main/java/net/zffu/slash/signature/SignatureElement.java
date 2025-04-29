@@ -1,13 +1,14 @@
 package net.zffu.slash.signature;
 
 import net.zffu.slash.MappingKey;
+import net.zffu.slash.utils.Comparable;
 
 /**
  * An element inside a {@link Signature}. Also represents a method's return signature.
  * @since 1.0.0
  * @see {@link Signature}
  */
-public class SignatureElement {
+public class SignatureElement implements Comparable<SignatureElement> {
 
     public final ElementType element;
     public final MappingKey className;
@@ -58,6 +59,11 @@ public class SignatureElement {
 
     public int getClassicLength() {
         return this.arrayDepth * 2 + (this.className != null ? this.className.length() : 0) + this.element.readable.length();
+    }
+
+    @Override
+    public boolean isEquals(SignatureElement element) {
+        return this.element == element.element && (this.element != ElementType.CLASS || this.className.isEquals(element.className)) && this.arrayDepth == element.arrayDepth;
     }
 
     /**
