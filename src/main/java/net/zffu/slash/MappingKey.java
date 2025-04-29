@@ -17,6 +17,20 @@ public class MappingKey {
     }
 
     /**
+     * Gives the string length of the {@link MappingKey}
+     * @return
+     */
+    public int length() {
+        int length = (this.keyElements.length > 0 ? this.keyElements.length - 1 : 0);
+
+        for(String element : this.keyElements) {
+            length += element.length();
+        }
+
+        return length;
+    }
+
+    /**
      * Converts the provided string into a {@link MappingKey}.
      * If the string is in either the dot or slash format, it will return with the correct format.
      * If it isn't, the function will guess the format by finding the first non-alphabetic character.

@@ -39,4 +39,22 @@ public class Signature {
         return new Signature(elems, SignatureElement.fromObfuscated(signatureSplit[1]));
     }
 
+
+    public static Signature fromClassic(String classic) {
+        List<SignatureElement> elems = new ArrayList<>();
+
+        String[] signatureSplit = classic.split("\\)");
+
+        signatureSplit[0] = signatureSplit[0].substring(1); // Removes the "(" from the first part
+
+        for(int i = 0; i < signatureSplit[0].length(); ++i) {
+            SignatureElement element = SignatureElement.fromClassic(signatureSplit[0].substring(i));
+
+            i += element.getClassicLength();
+            elems.add(element);
+        }
+
+        return new Signature(elems, SignatureElement.fromClassic(signatureSplit[1]));
+    }
+
 }
